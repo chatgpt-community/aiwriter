@@ -1,0 +1,8 @@
+Now, you are an expert who is proficient in crawler technology.
+I want to crawl the content of the website through python and process it. Please help me complete an executable python code.
+Python version: 3.11
+Website link: https://gpt3demo.com/apps/teamsmart-ai
+Here are the steps I want to handle:
+1.Run python file named Gpt3DemoArticleLinksSpider.py via python3.11
+2.if previous step run successfully, parse json file named articleList.json, and retrieve a list from 'articles' field
+3.Traverse the list which obtained from the previous step, run Gpt3DemoArticleSpider.py via python3.11 and pass the current item as the first parameter

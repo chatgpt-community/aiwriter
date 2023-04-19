@@ -1,0 +1,12 @@
+Now, you are an expert who is proficient in crawler technology.
+I want to crawl the content of the website through python and process it. Please help me complete an executable python code.
+Python version: 3.11
+Website link: https://gpt3demo.com
+1.Find elements whose class attribute is equal to 'page-content-container'
+2.Find all elements whose class attribute value is equal to 'listings' under the element which obtained from previous step
+3.Find all elements whose class attribute value contains 'MuiGrid-root' under the elements which obtained from previous step
+4.Traverse the list of elements obtained from the previous step, and retrieve the values of the href attribute of all 'a' tags
+5.Traverse the list which obtained from the previous step,
+judge whether the prefix of the item is equal to '/apps',if so, Concatenate string:'https://gpt3demo.com/' in front of the current item,
+if not, remove the current item
+6.Save the list which obtained from the previous step in a json file named articleList.json using json schema
