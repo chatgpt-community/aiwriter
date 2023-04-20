@@ -6,11 +6,13 @@ Here are the steps I want to handle:
 1: Crawl the html code of the website, and get all the html codes under the tag whose class value is 'listing-body'.
 2: Parse the html code obtained in the first step, and start filtering the elements in the html code.
 Filter criteria:
-if array: ['h1','h2','section'] contains the current element tag name, keep the element,
-if there are multiple elements with the tag named 'section', only the first one is kept
-3: At this step, we have obtained the filtered html elements, now we need to convert each of them into json format.
+keep the element if array: ['h1', 'h2', 'section'] contains the current element tag name.
+and only keep the first element whose tag name is 'section'
+3. keep the element whose tag name is equal to 'section'.
+4: At this step, we have obtained the filtered html elements, now we need to convert each of them into json format.
 Conversion logic:
-Parsing the html code, each element should be converted into a json object, the json object has two fields, namely: 'tag', 'content'
-the value of the 'tag' field is the tag name of the element, and the value of the 'content' field is the text content of the current element
+Parsing the html code, each element should be converted into a json object, the json object has two fields, name: 'tag', 'content'.
+the value of 'tag' is the element tag name.
+Get the HTML code of an element and ensure that the code is compressed into a single line, and set to the value of the 'content' field
 4: Save the converted json data to a file, file name: result.json
 just show me the complete python code
