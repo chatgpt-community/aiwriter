@@ -2,6 +2,8 @@
 
 ## AiWriter Plugin Architecture
 
+![img.png](resources/readme/arch.png)
+
 * use `prompt` to record `AiWriter` pair developing logs
 * use `resources` to save all templates and static files
 * use `crawler` to spider and generate information `event`
@@ -10,12 +12,24 @@
 * user `plan` to schedule crawler, parser, sender for business flow
 
 ## Features
-[*] US1 - add sender-wechat open platform
-[*] US2 - add crawler for https://gpt3demo.com/
-[*] US3 - add parser-markdown 
-[*] US4 - add parser-google translate 
-[*] US5 - add plan-gpt3demo_to_wechat
-[*] US6 - add main python to invoke relate plan
+
+### done
+
+* US1 - add sender-wechat open platform
+* US2 - add crawler for https://gpt3demo.com/  [refactoring]
+* US3 - add parser-markdown [refactoring]
+* US4 - add parser-google translate [refactoring]
+* US5 - add plan-gpt3demo_to_wechat
+* US6 - add main python to invoke relate plan
+
+### ongoing
+
+* US7 - add sender - xinqiu community
+
+### next
+
+* USX - add more crawler and parser and sender support
+* USY - add more plan support
 
 ## Run project locally
 
