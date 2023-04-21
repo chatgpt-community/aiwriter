@@ -1,17 +1,46 @@
+import time
+
+from crawler.Gpt3DemoArticleSpider import crawl
 from crawler.Gpt3DemoArticleLinksSpider import get_links
-from crawler.Gpt3DemoArticleSpider import generate_md_file
-from sender.wechat.WechatSender import WechatSender
-from parser.MDParser import gen_md_file
-import os
+from tools.FileTools import read_file, save_file
+from transfer.md.PlanetArticleTransfer import planet_transform
+from transfer.json.WxOfficialAccountTransfer import wx_transform
 
 
-def execute():
-    # add logic here...
-    # links = get_links()
-    # root_path = os.path.dirname(os.path.abspath(__file__))
-    # for link in links:
-    #     file_name = generate_md_file(link, root_path + '/json_results/')
-    #     gen_md_file(file_name, root_path + '/resources/advertising.md', root_path + '/md_results/')
-    #     break
-    sender = WechatSender()
-    sender.send({'title': 'Test Article2', 'subTitle': 'Test Subtitle2', 'content': 'Test Content2'})
+def execute(root_path):
+    ad_path_md = root_path + '/resources/advertising.md'
+    ad_path_json = root_path + '/resources/advertising.json'
+    root_path += "/results"
+    try:
+        links = retrieve_links(root_path)
+    except Exception as e:
+        print('Error: retrieve links error!', e)
+        return
+
+    c = 0
+    for link in links:
+        try:
+            if c == 2:
+                return
+            handle_single_link(root_path, link, ad_path_json, ad_path_md)
+            print("Link: " + link + " Successfully!")
+            time.sleep(0.5)
+            c += 1
+        except Exception as e:
+            print('Error: Handle article error!, Link: ' + link, e)
+            continue
+
+
+def retrieve_links(root_path):
+    links = get_links()
+    save_file(root_path + '/links_results', 'link.json', links, True)
+    return links
+
+
+def handle_single_link(root_path, link, ad_path_json, ad_path_md):
+    json_file_dir = root_path + '/json_source_results/'
+    json_file_name = crawl(link, json_file_dir)
+
+    json_source_content = read_file(json_file_dir + json_file_name, True)
+    planet_transform(json_source_content, json_file_name, link, root_path, ad_path_md)
+    wx_transform(root_path, json_file_name, json_source_content, ad_path_json, link)

@@ -1,0 +1,8 @@
+Now, you are an expert who is proficient in crawler technology.
+I want to crawl the content of the website through python and process it. Please help me complete an executable python code.
+Python version: 3.11
+Website link: https://gpt3demo.com
+1.Find the html code which under element whose class value contains 'listing-body' via lxml
+2.Keep the element whose tag name in array: ['h1','h2','section']
+3.Convert html to json using lxml
+4.Save the json data as a json file

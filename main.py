@@ -2,6 +2,7 @@
 import sys
 import re
 import importlib
+import os
 
 
 def to_camel_case(s):
@@ -27,7 +28,9 @@ def main():
         print(f"{module_name}.execute method not found!")
         return
 
-    module.execute()
+    root_path = os.path.dirname(os.path.abspath(__file__))
+
+    module.execute(root_path)
 
 
 if __name__ == '__main__':

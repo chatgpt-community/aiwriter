@@ -19,22 +19,28 @@ class WechatSender:
         token_data = json.loads(token_response.text)
         access_token = token_data['access_token']
 
+        media_url = f"https://api.weixin.qq.com/cgi-bin/material/get_material?access_token={access_token}"
+        add_draft_response = requests.post(media_url, {
+            'media_id': ''})
+
         # Add draft article
         add_draft_url = f"https://api.weixin.qq.com/cgi-bin/draft/add?access_token={access_token}"
-
+        headers = {'Content-Type': 'application/json; charset=utf-8'}
+        replaced_img_content = event['content'].replace('PLACE_HOLDER', 'https://mmbiz.qpic.cn/mmbiz_jpg/dghhiacNqQgg5Ub3OWHhU4cAIIZeooEfF6Ivicx3yyklokrsW3NIdgtibSVlNMdGTPJsvkuFrWnicbiarHiaiaX0Zy8jg/0?wx_fmt=jpeg')
         add_draft_data = {
             "articles": [{
                 "title": event['title'],
                 "thumb_media_id": "HQ85pONUeuAHlOhfVuNPhLcEt8TC8zH_EF9M-AiaMxqU91VJ_e2vCwDxCSlJHtwp",
                 "author": "熊大",
                 "digest": event['subTitle'],
-                "content": event['content'],
-                "content_source_url": '',
+                "content": replaced_img_content,
+                "content_source_url": event['sourceLink'],
                 "need_open_comment": 0,
                 "only_fans_can_comment": 0
             }]
         }
-        add_draft_response = requests.post(add_draft_url, json=add_draft_data)
+        add_draft_response = requests.post(add_draft_url, headers=headers,
+                                           data=bytes(json.dumps(add_draft_data, ensure_ascii=False), encoding='utf-8'))
         result = json.loads(add_draft_response.text)
         media_id = result['media_id']
 

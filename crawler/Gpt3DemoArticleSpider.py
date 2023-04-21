@@ -1,48 +1,29 @@
+from lxml import html
+from tools.ContentFormatTools import parse_html_to_json_dic
+from tools.FileTools import save_file
+from tools.StringTools import find_last_word_in_url
 import requests
-from bs4 import BeautifulSoup
-import os
-import re
-import json
 
 
-def generate_md_file(url, json_path):
+def crawl(url, save_path):
     response = requests.get(url)
-    html = response.content
-    soup = BeautifulSoup(html, 'html.parser')
-    listing_body = soup.find('div', class_='listing-body')
-    elements = []
-    section_count = 0
-    for element in listing_body:
-        if element.name in ['h1', 'h2', 'section']:
-            if section_count > 0 and element.name == 'section':
-                continue
-            if element.name == 'h1':
-                elements.append({
-                    "tag": "title",
-                    "content": element.text
-                })
-            if element.name == 'h2':
-                elements.append({
-                    "tag": "subtitle",
-                    "content": element.text
-                })
-            if element.name == 'section':
-                section_count += 1
-                cleand_html_code = re.sub(r'\s(class|id|name|style|href)="[^"]*"', '', element.prettify())
-                compressed_line = ''.join(cleand_html_code.splitlines())
-                elements.append({
-                    "tag": "main",
-                    "content": compressed_line
-                })
-    elements.append({
-        "tag": "link",
-        "content": url
-    })
-    if not os.path.exists(json_path):
-        os.makedirs(json_path)
+    tree = html.fromstring(response.content)
+    listing_body_elements = tree.xpath('//*[contains(@class, "listing-body")]/*')
 
-    filename = 'result-' + url.split("/")[-1] + '.json'
-    file_path = os.path.join(json_path, filename)
-    with open(file_path, 'w', encoding='utf-8') as f:
-        f.write(json.dumps(elements, ensure_ascii=False, indent=4))
-    return file_path
+    section_count = 0
+    selected_elements = []
+    for element in listing_body_elements:
+        if element.tag in ['h1', 'h2', 'section']:
+            if element.tag == 'section' and section_count > 0:
+                continue
+            selected_elements.append(element)
+            if element.tag == 'section':
+                section_count += 1
+
+    json_data = []
+    for element in selected_elements:
+        json_data.append(parse_html_to_json_dic(html.tostring(element).decode('utf-8'), True))
+
+    json_file_name = find_last_word_in_url(url) + '.json'
+    save_file(save_path, json_file_name, json_data, True)
+    return json_file_name
