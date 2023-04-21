@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: pipeline
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'main'
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  staging:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: delete previous version
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          port: 22
+          script: |
+            mkdir -p ${{ secrets.PATH }} &> /dev/null
+            echo $?
+            echo hello > ${{ secrets.PATH }}/demo.tmp 
+            echo $?
+            rm -rf ${{ secrets.PATH }} &> /dev/null || true
+            echo $?
+
+      - name: deploy artifacts to server
+        uses: up9cloud/action-rsync@master
+        env:
+          HOST: ${{ secrets.SERVER }}
+          USER: ${{ secrets.DEPLOY_USER }}
+          KEY: ${{secrets.DEPLOY_KEY}}
+          TARGET: ${{ secrets.PATH }}
+          SOURCE: ./
