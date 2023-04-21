@@ -9,8 +9,6 @@ class WechatSender:
         self.app_secret = os.environ.get('wechat_secret')
 
     def send(self, event):
-        print(self.app_secret)
-        print(self.app_id)
         if not self.app_id or not self.app_secret:
             print("Error: wechat_appid and/or wechat_secret not set.")
             raise ValueError("Missing required environment variables.")

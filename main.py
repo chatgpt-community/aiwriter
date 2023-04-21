@@ -1,24 +1,34 @@
-from crawler.Gpt3DemoArticleLinksSpider import get_links
-from crawler.Gpt3DemoArticleSpider import generate_md_file
-from parser.MDParser import gen_md_file
-from wechat.WechatSender import WechatSender
-
-import os
-import json
+#!/usr/bin/env python3
+import sys
+import re
+import importlib
 
 
-def run():
-    links = get_links()
-    root_path = os.path.dirname(os.path.abspath(__file__))
-    for link in links:
-        file_name = generate_md_file(link, root_path + '/json_results/')
-        gen_md_file(file_name, root_path + '/resources/advertising.md', root_path + '/md_results/')
-        break
+def to_camel_case(s):
+    return re.sub(r'(?:^|_)(\w)', lambda m: m.group(1).upper(), s)
 
 
-if __name__ == "__main__":
-    run()
-    WechatSender().send({'title': 'Test Article2', 'subTitle': 'Test Subtitle2', 'content': 'Test Content2'})
-    # event = ''
-    # with open('md_results/result-teamsmart-ai.md', 'r') as file:
-    #     event = json.load(file)
+def main():
+    if len(sys.argv) != 3 or sys.argv[1] not in ['-plan', '-p']:
+        print("Usage: python main.py -plan <plan_name>")
+        return
+
+    plan_name = to_camel_case(sys.argv[2])
+    module_name = f"plan.{plan_name}Plan"
+    print(module_name)
+
+    try:
+        module = importlib.import_module(module_name)
+    except ModuleNotFoundError:
+        print("Invalid plan!")
+        return
+
+    if not hasattr(module, "execute"):
+        print(f"{module_name}.execute method not found!")
+        return
+
+    module.execute()
+
+
+if __name__ == '__main__':
+    main()
