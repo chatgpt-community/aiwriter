@@ -43,3 +43,14 @@ jobs:
           KEY: ${{secrets.DEPLOY_KEY}}
           TARGET: ${{ secrets.PATH }}
           SOURCE: ./
+
+      - name: install all dependencys
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          port: 22
+          script: |
+            cd ${{ secrets.PATH }} 
+            pip install -r requirements.txt
