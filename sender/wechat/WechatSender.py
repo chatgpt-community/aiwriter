@@ -13,20 +13,13 @@ class WechatSender:
             print("Error: wechat_appid and/or wechat_secret not set.")
             raise ValueError("Missing required environment variables.")
 
-        # Get access token
-        token_url = f"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={self.app_id}&secret={self.app_secret}"
-        token_response = requests.get(token_url)
-        token_data = json.loads(token_response.text)
-        access_token = token_data['access_token']
-
-        media_url = f"https://api.weixin.qq.com/cgi-bin/material/get_material?access_token={access_token}"
-        add_draft_response = requests.post(media_url, {
-            'media_id': ''})
+        access_token = self.get_access_token()
 
         # Add draft article
         add_draft_url = f"https://api.weixin.qq.com/cgi-bin/draft/add?access_token={access_token}"
         headers = {'Content-Type': 'application/json; charset=utf-8'}
-        replaced_img_content = event['content'].replace('PLACE_HOLDER', 'https://mmbiz.qpic.cn/mmbiz_jpg/dghhiacNqQgg5Ub3OWHhU4cAIIZeooEfF6Ivicx3yyklokrsW3NIdgtibSVlNMdGTPJsvkuFrWnicbiarHiaiaX0Zy8jg/0?wx_fmt=jpeg')
+        replaced_img_content = event['content'].replace('PLACE_HOLDER',
+                                                        'https://mmbiz.qpic.cn/mmbiz_jpg/dghhiacNqQgg5Ub3OWHhU4cAIIZeooEfF6Ivicx3yyklokrsW3NIdgtibSVlNMdGTPJsvkuFrWnicbiarHiaiaX0Zy8jg/0?wx_fmt=jpeg')
         add_draft_data = {
             "articles": [{
                 "title": event['title'],
@@ -49,8 +42,50 @@ class WechatSender:
         publish_data = {
             "media_id": media_id
         }
-        publish_response = requests.post(publish_url, json=publish_data)
+        requests.post(publish_url, json=publish_data)
 
         # Log media_id of published article
         print(f"Published article with media_id: {media_id}")
         return media_id
+
+    def retrieve_all_articles_id(self):
+        access_token = self.get_access_token()
+        article_ids = []
+        current_count = 20
+        offset = 0
+        while current_count == 20:
+            batch_get_url = f'https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token={access_token}'
+            batch_get_body = {
+                "offset": offset,
+                "count": current_count
+            }
+            response = requests.post(batch_get_url, json=batch_get_body)
+            result = json.loads(response.text)
+            current_count = result['item_count']
+            offset += current_count
+            for i in result['item']:
+                article_ids.append(i['article_id'])
+        return article_ids
+
+    def remove_materials(self, ids):
+        access_token = self.get_access_token()
+        remove_article_url = f'https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token={access_token}'
+        for a_id in ids:
+            print('Current id: ' + a_id)
+            body = {
+                "article_id": a_id,
+            }
+            response = requests.post(remove_article_url, json=body)
+            remove_res = json.loads(response.text)
+            if remove_res['errcode'] == 0:
+                print('Remove successfully!')
+            else:
+                print(f'Remove failed!, code:{remove_res["errcode"]}, message: {remove_res["errmsg"]}')
+
+    def get_access_token(self):
+        # Get access token
+        token_url = f"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={self.app_id}&secret={self.app_secret}"
+        token_response = requests.get(token_url)
+        token_data = json.loads(token_response.text)
+        access_token = token_data['access_token']
+        return access_token

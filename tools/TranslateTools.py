@@ -14,4 +14,4 @@ def translate(text):
         print('-----------------------------')
         print(text)
         print('-----------------------------')
-        return ''
+        return text

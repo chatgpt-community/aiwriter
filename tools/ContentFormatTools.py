@@ -55,7 +55,9 @@ def parse_html_to_json_dic(html_code, need_translate):
 
 
 def parse_element(element, need_translate):
-    text_content = element.text.strip() if element.text else ''
+    tail = element.tail.strip() if element.tail else ''
+    text = element.text.strip() if element.text else ''
+    text_content = (text + ' ' + tail).strip()
     text_content = translate(text_content) if need_translate and text_content and element.tag != 'h1' else text_content
     json_dict = {'tag': element.tag, 'text': text_content, 'children': []}
     for child in element:
