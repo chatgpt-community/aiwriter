@@ -47,3 +47,4 @@ Gpt3demoToJsonSourcePlan.py: used for generate source json file, pls run this pl
 SendPlantArticlePlan.py: used for sending plant articles
 SendWxArticleFromJsonSourcePlan.py: used for sending wx articles
 ClearWxArticlesPlan.py: used for delete wx article, only 10 articles
+currentLocation.json: used for controlling current crawl articles offset and limit
