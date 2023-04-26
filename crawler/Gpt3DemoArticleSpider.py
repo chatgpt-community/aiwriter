@@ -24,6 +24,7 @@ def crawl(url, save_path):
     for element in selected_elements:
         json_data.append(parse_html_to_json_dic(html.tostring(element).decode('utf-8'), True))
 
+    json_data.append({'tag': 'link', 'text': url})
     json_file_name = find_last_word_in_url(url) + '.json'
     save_file(save_path, json_file_name, json_data, True)
     return json_file_name

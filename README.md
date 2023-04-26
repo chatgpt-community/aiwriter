@@ -42,3 +42,8 @@ export wechat_appid="replace me"
 python main -plan gpt3demo_to_wechat
 
 ```
+
+Gpt3demoToJsonSourcePlan.py: used for generate source json file, pls run this plan first
+SendPlantArticlePlan.py: used for sending plant articles
+SendWxArticleFromJsonSourcePlan.py: used for sending wx articles
+ClearWxArticlesPlan.py: used for delete wx article, only 10 articles

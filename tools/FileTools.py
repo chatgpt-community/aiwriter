@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 
 
 def read_file(file_path, json_file):
@@ -8,6 +9,11 @@ def read_file(file_path, json_file):
             return json.load(f)
     with open(file_path, 'r') as file:
         return file.read()
+
+
+def delete_dir(path):
+    if os.path.exists(path):
+        shutil.rmtree(path)
 
 
 def save_file(file_dir, file_name, content, json_file):

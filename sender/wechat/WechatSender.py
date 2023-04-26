@@ -1,4 +1,6 @@
 import os
+import time
+
 import requests
 import json
 
@@ -48,29 +50,25 @@ class WechatSender:
         print(f"Published article with media_id: {media_id}")
         return media_id
 
-    def retrieve_all_articles_id(self):
+    def retrieve_10_articles_id(self):
         access_token = self.get_access_token()
         article_ids = []
-        current_count = 20
-        offset = 0
-        while current_count == 20:
-            batch_get_url = f'https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token={access_token}'
-            batch_get_body = {
-                "offset": offset,
-                "count": current_count
-            }
-            response = requests.post(batch_get_url, json=batch_get_body)
-            result = json.loads(response.text)
-            current_count = result['item_count']
-            offset += current_count
-            for i in result['item']:
-                article_ids.append(i['article_id'])
+        batch_get_url = f'https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token={access_token}'
+        batch_get_body = {
+            "offset": 0,
+            "count": 10
+        }
+        response = requests.post(batch_get_url, json=batch_get_body)
+        result = json.loads(response.text)
+        for i in result['item']:
+            article_ids.append(i['article_id'])
         return article_ids
 
     def remove_materials(self, ids):
         access_token = self.get_access_token()
-        remove_article_url = f'https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token={access_token}'
+        remove_article_url = f'https://api.weixin.qq.com/cgi-bin/freepublish/delete?access_token={access_token}'
         for a_id in ids:
+            time.sleep(0.5)
             print('Current id: ' + a_id)
             body = {
                 "article_id": a_id,

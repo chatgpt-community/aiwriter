@@ -63,3 +63,9 @@ def parse_element(element, need_translate):
     for child in element:
         json_dict['children'].append(parse_element(child, need_translate))
     return json_dict
+
+
+def retrieve_data_from_json_list(list_data, target):
+    for el in list_data:
+        if target == el['tag']:
+            return el
