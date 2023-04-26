@@ -1,5 +1,5 @@
 {
-  "gpt_demo3_offset": 0,
-  "gpt_demo3_limit": 100,
-  "gpt_demo3_end": false
+    "gpt_demo3_offset": 5,
+    "gpt_demo3_limit": 1000,
+    "gpt_demo3_end": false
 }

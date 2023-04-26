@@ -45,7 +45,7 @@ def parse_json_to_html_code(data, target_tags):
             tag = item["tag"]
             text = item["text"]
             children = parse_json_to_html_code(item["children"], []) if item["children"] else ""
-            html_code += f"<{tag}>{text}{children}</{tag}><br/>"
+            html_code += f"<{tag}>{text}{children}</{tag}><br/><p></p>"
     return html_code
 
 

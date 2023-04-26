@@ -6,7 +6,7 @@ from tools.FileTools import save_file, read_file, delete_dir
 
 
 def execute(root_path):
-    results_path = root_path + '/results/'
+    results_path = root_path + '/.results/'
     delete_dir(results_path)
     links = retrieve_part_links(results_path, root_path)
 

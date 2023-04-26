@@ -16,4 +16,4 @@ def wx_transform(root_path, json_file_name, json_source_content, ad_path):
                       'content': html_content,
                       'sourceLink': source_link['text']}
     save_file(wechat_file_dir, json_file_name, wechat_message, True)
-    WechatSender().send(wechat_message)
+    return wechat_message

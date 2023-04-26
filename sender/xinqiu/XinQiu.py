@@ -26,7 +26,8 @@ class XinQiu:
         tip_div.click()
         editor_div = self.driver.find_element(By.CSS_SELECTOR, 'div.ql-editor.ql-blank')
         p_element = editor_div.find_element(By.CSS_SELECTOR, "p")
-        p_element.send_keys(event['content'])
+        content = event['content']
+        self.driver.execute_script("arguments[0].innerHTML = arguments[1];", p_element, content)
 
         # click the submit button
         submit_button = self.driver.find_element(By.CLASS_NAME, 'submit-btn')
